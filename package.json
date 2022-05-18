@@ -1,0 +1,24 @@
+{
+  "name": "@walery/stencil-aws-account-resolver",
+  "description": "Stencil blocks to resolve account name and related values of AWS account",
+  "version": "0.0.0",
+  "files": [
+    "blocks/"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "author": "Walery Strauch",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/walery/stencil-aws-account-resolver/issues"
+  },
+  "homepage": "https://github.com/walery/stencil-aws-account-resolver#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walery/stencil-aws-account-resolver.git"
+  },
+  "@walery/serverless-plugin-stencil": {
+    "alias": "account"
+  }
+}
