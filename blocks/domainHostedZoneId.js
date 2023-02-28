@@ -13,14 +13,14 @@ module.exports.resolve = ({variableUtils, slsHelper}) => {
       const {HostedZones} = await slsHelper.sendAwsRequest('Route53', 'listHostedZonesByName', {DNSName: `${accountDomain}.`});
 
       const zoneIds = HostedZones
-        .filter(e => e.Name === `${accountDomain}.` && e.Config.PrivateZone === false)
-        .map(e => e.Id)
-        .map(e => e.split('/')[2]);
+        .filter(zone => zone.Name === `${accountDomain}.` && zone.Config.PrivateZone === false)
+        .map(zone => zone.Id)
+        .map(zoneId => zoneId.split('/')[2]);
 
       if (zoneIds.length === 1) {
         resolve(zoneIds[0]);
       } else {
-        reject(`Expected exact one match of public route53 hosted zone for '${accountDomain}' domain. Found '${zoneIds.length}' (${zoneIds})."`)
+        reject(`Expected exact one match of public route53 hosted zone for '${accountDomain}' domain. Found '${zoneIds.length}' (${zoneIds})."`);
       }
     } catch (error) {
       reject(error);
