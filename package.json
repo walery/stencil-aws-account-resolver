@@ -2,6 +2,9 @@
   "name": "@walery/stencil-aws-account-resolver",
   "description": "Stencil blocks to resolve account name and related values of AWS account",
   "version": "0.0.2",
+  "devDependencies": {
+    "xo": "0.53.1"
+  },
   "files": [
     "blocks/"
   ],
@@ -17,6 +20,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/walery/stencil-aws-account-resolver.git"
+  },
+  "xo": {
+    "space": true
   },
   "@walery/serverless-plugin-stencil": {
     "alias": "account"
