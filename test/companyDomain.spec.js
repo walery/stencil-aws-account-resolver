@@ -1,5 +1,47 @@
 const test = require('ava');
 
+test.serial('should resolve ssm:companyDomain if ssm:companyDomain and stencil:companyName and stencil:companyTld provides default values', async t => {
+  const actual = await resolveCompanyDomain();
+  t.is(actual, 'ssm.foo');
+});
+
+test.serial('should resolve ssm:companyDomain if ssm:companyDomain has overwritten value and stencil:companyName and stencil:companyTld provides default values', async t => {
+  const mockOverwrites = {
+    'ssm(us-east-1):/stencil/aws/companyDomain': Promise.resolve('ltd.org'),
+  };
+
+  const actual = await resolveCompanyDomain(mockOverwrites);
+  t.is(actual, 'ltd.org');
+});
+
+test.serial('should resolve ssm:companyDomain if ssm:companyDomain and stencil:companyName are resolvable and stencil:companyTld is not resolvable', async t => {
+  const mockOverwrites = {
+    'stencil(account):companyTld': undefined,
+  };
+
+  const actual = await resolveCompanyDomain(mockOverwrites);
+  t.is(actual, 'ssm.foo');
+});
+
+test.serial('should resolve ssm:companyDomain if ssm:companyDomain and stencil:companyTld are resolvable and stencil:companyName is not resolvable', async t => {
+  const mockOverwrites = {
+    'stencil(account):companyName': undefined,
+  };
+
+  const actual = await resolveCompanyDomain(mockOverwrites);
+  t.is(actual, 'ssm.foo');
+});
+
+test.serial('should resolve ssm:companyDomain if ssm:companyDomain is resolvable but stencil:companyTld and stencil:companyName are not resolvable', async t => {
+  const mockOverwrites = {
+    'stencil(account):companyTld': undefined,
+    'stencil(account):companyName': undefined,
+  };
+
+  const actual = await resolveCompanyDomain(mockOverwrites);
+  t.is(actual, 'ssm.foo');
+});
+
 test.serial('should resolve compound companyDomain if ssm:companyDomain is not resolvable and stencil:companyName and stencil:companyTld provides default values', async t => {
   const mockOverwrites = {
     'ssm(us-east-1):/stencil/aws/companyDomain': undefined,
