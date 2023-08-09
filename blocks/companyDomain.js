@@ -5,7 +5,8 @@ module.exports.resolve = ({variableUtils}) => {
     return companyDomain;
   }
 
-  companyDomain = new Promise((resolve, reject) => {
+  const ssmCompanyDomain = variableUtils.resolveVariable('ssm(us-east-1):/stencil/aws/companyDomain');
+  const compoundCompanyDomain = () => new Promise((resolve, reject) => {
     const companyName = variableUtils.resolveVariable('stencil(account):companyName');
     const companyTld = variableUtils.resolveVariable('stencil(account):companyTld');
 
@@ -17,6 +18,17 @@ module.exports.resolve = ({variableUtils}) => {
         reject(error);
       });
   });
+
+  companyDomain = new Promise((resolve, reject) => {
+    ssmCompanyDomain
+      .then(companyDomainValue => {
+        resolve(companyDomainValue);
+      })
+      .catch(_ => {
+        compoundCompanyDomain()
+          .then(companyDomainValue => resolve(companyDomainValue))
+          .catch(error => reject(error));
+      });
+  });
   return companyDomain;
 };
-

@@ -14,6 +14,6 @@ Block | Resolution | Original source
 `${stencil(account):name}` | acme-playground | API(`Organizations describeAccount`)`.Account.Name`
 `${stencil(account):unit}` | playground | `${stencil(account):name}.split('-').slice(1).join('-')`
 `${stencil(account):companyName}` | acme | `${stencil(account):name}.split('-')[0]`
-`${stencil(account):companyDomain}` | acme.cloud | `${stencil(account):companyName}`.`${stencil(account):companyTld}`
+`${stencil(account):companyDomain}` | acme.cloud | `ssm(us-east-1):/stencil/aws/companyDomain` or `${stencil(account):companyName}`.`${stencil(account):companyTld}` if ssm value is not available
 `${stencil(account):domain}` | playground.acme.cloud | `${stencil(account):unit}`.`${stencil(account):companyDomain}`
 `${stencil(account):domainHostedZoneId}` | Z3XXYYAABBCCDD | API(`Route53 listHostedZonesByName`)`.Id`

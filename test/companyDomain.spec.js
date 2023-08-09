@@ -1,12 +1,17 @@
 const test = require('ava');
 
-test.serial('should resolve companyDomain if stencil:companyName and stencil:companyTld provides default values', async t => {
-  const actual = await resolveCompanyDomain();
+test.serial('should resolve compound companyDomain if ssm:companyDomain is not resolvable and stencil:companyName and stencil:companyTld provides default values', async t => {
+  const mockOverwrites = {
+    'ssm(us-east-1):/stencil/aws/companyDomain': undefined,
+  };
+
+  const actual = await resolveCompanyDomain(mockOverwrites);
   t.is(actual, 'acme.bar');
 });
 
-test.serial('should resolve companyDomain if stencil:companyName and stencil:companyTld are overwritten', async t => {
+test.serial('should resolve compound companyDomain if ssm:companyDomain is not resolvable and stencil:companyName and stencil:companyTld are overwritten', async t => {
   const mockOverwrites = {
+    'ssm(us-east-1):/stencil/aws/companyDomain': undefined,
     'stencil(account):companyName': Promise.resolve('inc'),
     'stencil(account):companyTld': Promise.resolve('com'),
   };
@@ -15,8 +20,9 @@ test.serial('should resolve companyDomain if stencil:companyName and stencil:com
   t.is(actual, 'inc.com');
 });
 
-test.serial('should reject if stencil:companyTld is not resolvable', async t => {
+test.serial('should reject if ssm:companyDomain and stencil:companyTld is not resolvable', async t => {
   const mockOverwrites = {
+    'ssm(us-east-1):/stencil/aws/companyDomain': undefined,
     'stencil(account):companyTld': undefined,
   };
 
@@ -27,8 +33,9 @@ test.serial('should reject if stencil:companyTld is not resolvable', async t => 
   t.is(actual.message, 'Unknown variable expression \'stencil(account):companyTld\'.');
 });
 
-test.serial('should reject if stencil:companyName is not resolvable', async t => {
+test.serial('should reject if ssm:companyDomain and stencil:companyName is not resolvable', async t => {
   const mockOverwrites = {
+    'ssm(us-east-1):/stencil/aws/companyDomain': undefined,
     'stencil(account):companyName': undefined,
   };
 
@@ -39,8 +46,9 @@ test.serial('should reject if stencil:companyName is not resolvable', async t =>
   t.is(actual.message, 'Unknown variable expression \'stencil(account):companyName\'.');
 });
 
-test.serial('should reject if stencil:companyName and stencil:companyTld is not resolvable', async t => {
+test.serial('should reject if ssm:companyDomain and stencil:companyName and stencil:companyTld is not resolvable', async t => {
   const mockOverwrites = {
+    'ssm(us-east-1):/stencil/aws/companyDomain': undefined,
     'stencil(account):companyName': undefined,
     'stencil(account):companyTld': undefined,
   };
@@ -57,16 +65,17 @@ test.serial('should return cached result if resolution happens more than once', 
   const actual = await underTest.resolve({
     variableUtils: createVariableUtilsMock(),
   });
-  t.is(actual, 'acme.bar');
+  t.is(actual, 'ssm.foo');
 
   const mockOverwrites = {
+    'ssm(us-east-1):/stencil/aws/companyDomain': undefined,
     'stencil(account):companyName': undefined,
   };
 
   const actualCached = await underTest.resolve({
     variableUtils: createVariableUtilsMock(mockOverwrites),
   });
-  t.is(actualCached, 'acme.bar');
+  t.is(actualCached, 'ssm.foo');
 });
 
 const resolveCompanyDomain = (overwrites = {}) => {
@@ -83,6 +92,7 @@ const createUncachedInstance = () => {
 
 const createVariableUtilsMock = overwrites => {
   const resolveVariableValues = {
+    'ssm(us-east-1):/stencil/aws/companyDomain': Promise.resolve('ssm.foo'),
     'stencil(account):companyName': Promise.resolve('acme'),
     'stencil(account):companyTld': Promise.resolve('bar'),
   };
