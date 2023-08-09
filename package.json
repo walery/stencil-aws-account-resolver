@@ -3,7 +3,7 @@
   "description": "Stencil blocks to resolve account name and related values of AWS account",
   "version": "0.0.4-SNAPSHOT.0",
   "devDependencies": {
-    "xo": "0.53.1"
+    "xo": "0.55.1"
   },
   "files": [
     "blocks/"
