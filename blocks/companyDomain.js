@@ -5,16 +5,17 @@ module.exports.resolve = ({variableUtils}) => {
     return companyDomain;
   }
 
-  companyDomain = new Promise(async (resolve, reject) => {
-    try {
-      // TODO resolve in parallel
-      const companyName = await variableUtils.resolveVariable('stencil(account):companyName');
-      const companyTld = await variableUtils.resolveVariable('stencil(account):companyTld');
+  companyDomain = new Promise((resolve, reject) => {
+    const companyName = variableUtils.resolveVariable('stencil(account):companyName');
+    const companyTld = variableUtils.resolveVariable('stencil(account):companyTld');
 
-      resolve(`${companyName}.${companyTld}`);
-    } catch (error) {
-      reject(error);
-    }
+    Promise.all([companyName, companyTld])
+      .then(values => {
+        resolve(`${values[0]}.${values[1]}`);
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
   return companyDomain;
 };
