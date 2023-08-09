@@ -1,7 +1,7 @@
 {
   "name": "@walery/stencil-aws-account-resolver",
   "description": "Stencil blocks to resolve account name and related values of AWS account",
-  "version": "0.0.4-SNAPSHOT.0",
+  "version": "0.0.4",
   "devDependencies": {
     "ava": "5.3.1",
     "nyc": "15.1.0",
